@@ -128,11 +128,9 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
             )
 
         # if continuing then get the messages from the conversation history
-        continuing_conversation = False
         if user_input.conversation_id in self.history:
             conversation_id = user_input.conversation_id
             messages = self.history[conversation_id]
-            continuing_conversation = True
         # if new then create a new conversation history
         else:
             conversation_id = ulid.ulid()
@@ -150,45 +148,39 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
 
 
         entities_template = ''
-        if not continuing_conversation:
-            for entity_id in entity_ids:
-                # get entities from the registry
-                # to determine if they are exposed to the Conversation Assistant
-                # registry entries have the propert "options['conversation']['should_expose']"
-                entity = registry.entities.get(entity_id)
+        for entity_id in entity_ids:
+            # get entities from the registry
+            # to determine if they are exposed to the Conversation Assistant
+            # registry entries have the propert "options['conversation']['should_expose']"
+            entity = registry.entities.get(entity_id)
 
-                if not entity or not entity.options.get('conversation', {}).get('should_expose', False):
-                    _LOGGER.warn('Entity with id [%s] was None or should_expose was False %s', str(entity_id), str(entity))
-                    continue
+            if not entity or not entity.options.get('conversation', {}).get('should_expose', False):
+                _LOGGER.warn('Entity with id [%s] was None or should_expose was False %s', str(entity_id), str(entity))
+                continue
 
-                # get the status string
-                status_object = self.hass.states.get(entity_id)
-                status_string = status_object.state
+            # get the status string
+            status_object = self.hass.states.get(entity_id)
+            status_string = status_object.state
 
-                services = all_services.get(entity.domain, {}).keys()
+            services = all_services.get(entity.domain, {}).keys()
 
 
-                # append the entitites tempalte
-                entities_template += entity_template.substitute(
-                    id=entity_id,
-                    domain=entity.domain,
-                    name=entity.name or entity_id,
-                    status=status_string or "unknown",
-                    action=','.join(services),
-                )
-
-            # generate the prompt using the prompt_template
-            prompt_render = prompt_template.substitute(
-                entities=entities_template,
-                prompt=user_input.text
+            # append the entitites tempalte
+            entities_template += entity_template.substitute(
+                id=entity_id,
+                domain=entity.domain,
+                name=entity.name or entity_id,
+                status=status_string or "unknown",
+                action=','.join(services),
             )
 
-        
-            messages.append({"role": "user", "content": prompt_render})
-        else:
-            messages.append({"role": "user", "content": user_input.text})
+        # generate the prompt using the prompt_template
+        prompt_render = prompt_template.substitute(
+            entities=entities_template,
+            prompt=user_input.text
+        )
 
-        _LOGGER.debug("Prompt for %s: %s", model, messages)
+        _LOGGER.debug("Prompt for %s: %s", model, messages | {"role": "user": "content": prompt_render})
 
         """ OpenAI Call """
 
@@ -196,7 +188,7 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
         try:
             result = await openai.ChatCompletion.acreate(
                 model=model,
-                messages=messages,
+                messages=messages | {"role": "user": "content": prompt_render},
                 max_tokens=max_tokens,
                 top_p=top_p,
                 temperature=temperature,
@@ -211,6 +203,8 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
             return conversation.ConversationResult(
                 response=intent_response, conversation_id=conversation_id
             )
+
+        messages.append({"role": "user", "content": user_input.text})
 
         content = result["choices"][0]["message"]["content"]
 
