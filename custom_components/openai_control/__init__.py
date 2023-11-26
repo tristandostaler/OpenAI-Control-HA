@@ -276,7 +276,7 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
                 )
             
 
-        messages.append({"role": "user", "content": reply})
+        messages.append({"role": "assistant", "content": reply})
         self.history[conversation_id] = messages
 
 
