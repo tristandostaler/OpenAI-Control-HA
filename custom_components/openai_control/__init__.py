@@ -184,6 +184,7 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
 
         _LOGGER.debug("Prompt for %s: %s", model, openai_messages)
 
+
         """ OpenAI Call """
 
         # call OpenAI
