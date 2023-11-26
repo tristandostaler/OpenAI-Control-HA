@@ -144,7 +144,7 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
         # NOTE: for the first release only lights are supported
 
         registry = entity_registry.async_get(self.hass)
-        entity_ids = self.hass.states.async_entity_ids()
+        entity_ids = self.hass.states.entity_ids()
         all_services = self.hass.services.services()
 
         entities_template = ''
