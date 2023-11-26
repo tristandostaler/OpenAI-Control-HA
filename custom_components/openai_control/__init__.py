@@ -144,7 +144,7 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
         # NOTE: for the first release only lights are supported
 
         registry = entity_registry.async_get(self.hass)
-        entity_ids = self.hass.states.async_entity_ids('light')
+        entity_ids = self.hass.states.async_entity_ids()
 
         entities_template = ''
 
@@ -162,11 +162,14 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
             status_string = status_object.state
 
             # TODO: change this to dynamic call once more than lights are supported
-            services = ['toggle', 'turn_off', 'turn_on']
+            #services = ['toggle', 'turn_off', 'turn_on']
+            services = self.hass.services.services().get(entity.domain, {}).keys()
+
 
             # append the entitites tempalte
             entities_template += entity_template.substitute(
                 id=entity_id,
+                domain=entity.domain,
                 name=entity.name or entity_id,
                 status=status_string or "unknown",
                 action=','.join(services),
@@ -256,7 +259,7 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
             try:
                 for entity in json_response["entities"]:
                     # TODO: make this support more than just lights
-                    await self.hass.services.async_call('light', entity['action'], {'entity_id': entity['id']})
+                    await self.hass.services.async_call(entity['domain'], entity['action'], {'entity_id': entity['id']})
                     _LOGGER.debug('ACTION: %s', entity['action'])
                     _LOGGER.debug('ID: %s', entity['id'])
             except KeyError as err:

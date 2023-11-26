@@ -2,10 +2,10 @@
 
 DOMAIN = "openai_control"
 
-ENTITY_TEMPLATE = """$id<>$name<>$status<>$action
+ENTITY_TEMPLATE = """$id<>$name<>$domain<>$status<>$action
 """
 
-PROMPT_TEMPLATE = """Below is a list of devices, containing the device id, name, state, and actions to perform.
+PROMPT_TEMPLATE = """Below is a list of devices, containing the device id, name, domain, state, and actions to perform.
 The sections of the string are delimited by the string "<>"
 
 Entities:
@@ -13,7 +13,7 @@ $entities
 
 Prompt: "$prompt"
 
-JSON Template: { "entities": [ { "id": "", "action": "" } ], "assistant": "" }
+JSON Template: { "entities": [ { "id": "", "domain": "", "action": "" } ], "assistant": "" }
 
 Determine if the above prompt is a command related to the above entities. Respond only in JSON.
 
