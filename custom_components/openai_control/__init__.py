@@ -180,7 +180,9 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
             prompt=user_input.text
         )
 
-        _LOGGER.debug("Prompt for %s: %s", model, messages | {"role": "user": "content": prompt_render})
+        openai_messages = messages + [{"role": "user": "content": prompt_render}]
+
+        _LOGGER.debug("Prompt for %s: %s", model, openai_messages)
 
         """ OpenAI Call """
 
@@ -188,7 +190,7 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
         try:
             result = await openai.ChatCompletion.acreate(
                 model=model,
-                messages=messages | {"role": "user": "content": prompt_render},
+                messages=openai_messages,
                 max_tokens=max_tokens,
                 top_p=top_p,
                 temperature=temperature,
