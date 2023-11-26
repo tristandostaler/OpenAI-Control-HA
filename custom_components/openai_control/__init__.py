@@ -251,9 +251,14 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
 
             try:
                 for entity in json_response["entities"]:
-                    await self.hass.services.async_call(entity['domain'], entity['action'], {'entity_id': entity['id']})
-                    _LOGGER.debug('ACTION: %s', entity['action'])
-                    _LOGGER.debug('ID: %s', entity['id'])
+                    if self.hass.services.has_service(entity['domain'], entity['action']):
+                        await self.hass.services.async_call(entity['domain'], entity['action'], {'entity_id': entity['id']})
+                        _LOGGER.debug('ACTION: %s', entity['action'])
+                        _LOGGER.debug('ID: %s', entity['id'])
+                    # else:
+                    #     real_entity = registry.entities.get(entity_id)
+                    #     status_object = self.hass.states.get(real_entity)
+                    #     status_string = status_object.state
             except KeyError as err:
                 _LOGGER.warn('No entities detected for prompt %s', user_input.text)
 
