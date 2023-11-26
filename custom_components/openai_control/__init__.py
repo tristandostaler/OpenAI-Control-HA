@@ -145,6 +145,7 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
 
         registry = entity_registry.async_get(self.hass)
         entity_ids = self.hass.states.async_entity_ids()
+        all_services = self.hass.services.services()
 
         entities_template = ''
 
@@ -163,7 +164,7 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
 
             # TODO: change this to dynamic call once more than lights are supported
             #services = ['toggle', 'turn_off', 'turn_on']
-            services = self.hass.services.services().get(entity.domain, {}).keys()
+            services = all_services.get(entity.domain, {}).keys()
 
 
             # append the entitites tempalte
