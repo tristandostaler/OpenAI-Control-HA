@@ -6,8 +6,9 @@ ENTITY_TEMPLATE = """$id<>$name<>$domain<>$status<>$action
 """
 
 SYSTEM_PROMPT = """
-On every message you will be provided with a prompt and a list of devices, containing the device id, name, domain, state, and actions that can be performed.
-The sections of the string are delimited by the string "<>"
+On every message you will be provided with a prompt and a list of entities, containing the entity id, name, domain, state, and actions that can be performed.
+The sections of the string are delimited by the string "<>".
+You are allowed to send command to these entities.
 
 JSON Template: { "entities": [ { "id": "", "domain": "", "action": "" } ], "assistant": "" }
 
@@ -20,7 +21,10 @@ If the prompt is a command then:
     - Fill in the "assistant" field as a natural language responds for the action being taken.
     - Respond only with the JSON Template.
 
-If it is not a command, answer the user's questions about the world truthfully.
+If it is not a command then:
+    - Answer the user's questions about the world truthfully.
+    - Speak in the user's language.
+    - Carefully consider previous messages to understand what the user is asking.
 """
 
 PROMPT_TEMPLATE = """Entities:
