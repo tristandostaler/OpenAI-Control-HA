@@ -156,7 +156,8 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
             # registry entries have the propert "options['conversation']['should_expose']"
             entity = registry.entities.get(entity_id)
 
-            if entity.options['conversation']['should_expose'] is not True:
+            if not entity or not entity.options.get('conversation', {}).get('should_expose', False):
+                _LOGGER.warn('Entity was None or should_expose was False %s', str(entity))
                 continue
 
             # get the status string
