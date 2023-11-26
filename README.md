@@ -1,11 +1,11 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/master/.attachments/icon-light-mode.png#gh-light-mode-only">
-    <img src="https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/master/.attachments/icon-dark-mode.png#gh-dark-mode-only">
+    <img src="https://raw.githubusercontent.com/tristandostaler/OpenAI-Control-HA/master/.attachments/icon-light-mode.png#gh-light-mode-only">
+    <img src="https://raw.githubusercontent.com/tristandostaler/OpenAI-Control-HA/master/.attachments/icon-dark-mode.png#gh-dark-mode-only">
 </p>
 
 <h1 align="center">
 
-[OpenAI Control Custom Integration](https://github.com/alanjames1987/OpenAI-Control-HA) for Home Assistant
+[OpenAI Control Custom Integration](https://github.com/tristandostaler/OpenAI-Control-HA) for Home Assistant
 
 </h1>
 
@@ -36,7 +36,7 @@ Currently, this integration only supports OpenAI but can be used as a base to in
 
 1. From "Integrations" click on the three dots in the top right corner and click "Custom reponsitories".
 
-1. Paste in the GitHub link to this repository, [https://github.com/alanjames1987/OpenAI-Control-HA](https://github.com/alanjames1987/OpenAI-Control-HA) and select "Integration" as the category.
+1. Paste in the GitHub link to this repository, [https://github.com/tristandostaler/OpenAI-Control-HA](https://github.com/tristandostaler/OpenAI-Control-HA) and select "Integration" as the category.
 
 1. Click add and the integration will be added to HACS.
 
@@ -50,7 +50,7 @@ Currently, this integration only supports OpenAI but can be used as a base to in
 
 <div align="center">
 
-![](https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/master/.attachments/install_key.png "API Key")
+![](https://raw.githubusercontent.com/tristandostaler/OpenAI-Control-HA/master/.attachments/install_key.png "API Key")
 
 </div>
 
@@ -58,7 +58,7 @@ Currently, this integration only supports OpenAI but can be used as a base to in
 
 <div align="center">
 
-![](https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/master/.attachments/install_select.png "Integraions")
+![](https://raw.githubusercontent.com/tristandostaler/OpenAI-Control-HA/master/.attachments/install_select.png "Integraions")
 
 </div>
 
@@ -94,7 +94,7 @@ The phrase "Turn on the office switch" did as expected and turned on the office 
 
 <div align="center">
 
-![](https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/master/.attachments/example_office.png "Turn on the office switch")
+![](https://raw.githubusercontent.com/tristandostaler/OpenAI-Control-HA/master/.attachments/example_office.png "Turn on the office switch")
 
 </div>
 
@@ -102,7 +102,7 @@ The phrase "Can you get ready for a guest to arrive?" turned on the driveway lig
 
 <div align="center">
 
-![](https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/master/.attachments/example_guest.png "Can you get ready for a guest to arrive?")
+![](https://raw.githubusercontent.com/tristandostaler/OpenAI-Control-HA/master/.attachments/example_guest.png "Can you get ready for a guest to arrive?")
 
 </div>
 
