@@ -180,7 +180,7 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
             prompt=user_input.text
         )
 
-        openai_messages = messages + [{"role": "user": "content": prompt_render}]
+        openai_messages = messages + [{"role": "user", "content": prompt_render}]
 
         _LOGGER.debug("Prompt for %s: %s", model, openai_messages)
 
