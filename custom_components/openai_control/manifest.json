@@ -1,6 +1,6 @@
 {
   "domain": "openai_control",
-  "name": "OpenAI Conrtrol",
+  "name": "OpenAI Control",
   "codeowners": ["@tristandostaler"],
   "config_flow": true,
   "dependencies": ["conversation"],
