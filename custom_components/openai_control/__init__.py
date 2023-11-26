@@ -128,9 +128,11 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
             )
 
         # if continuing then get the messages from the conversation history
+        continuing_conversation = False
         if user_input.conversation_id in self.history:
             conversation_id = user_input.conversation_id
             messages = self.history[conversation_id]
+            continuing_conversation = True
         # if new then create a new conversation history
         else:
             conversation_id = ulid.ulid()
@@ -141,7 +143,6 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
         """ Entities """
 
         # Get all entities exposed to the Conversation Assistant
-        # NOTE: for the first release only lights are supported
 
         registry = entity_registry.async_get(self.hass)
         entity_ids = self.hass.states.async_entity_ids()
@@ -149,64 +150,51 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
 
 
         entities_template = ''
+        if not continuing_conversation:
+            for entity_id in entity_ids:
+                # get entities from the registry
+                # to determine if they are exposed to the Conversation Assistant
+                # registry entries have the propert "options['conversation']['should_expose']"
+                entity = registry.entities.get(entity_id)
 
-        for entity_id in entity_ids:
-            # get entities from the registry
-            # to determine if they are exposed to the Conversation Assistant
-            # registry entries have the propert "options['conversation']['should_expose']"
-            entity = registry.entities.get(entity_id)
+                if not entity or not entity.options.get('conversation', {}).get('should_expose', False):
+                    _LOGGER.warn('Entity with id [%s] was None or should_expose was False %s', str(entity_id), str(entity))
+                    continue
 
-            if not entity or not entity.options.get('conversation', {}).get('should_expose', False):
-                _LOGGER.warn('Entity was None or should_expose was False %s', str(entity))
-                continue
+                # get the status string
+                status_object = self.hass.states.get(entity_id)
+                status_string = status_object.state
 
-            # get the status string
-            status_object = self.hass.states.get(entity_id)
-            status_string = status_object.state
-
-            # TODO: change this to dynamic call once more than lights are supported
-            #services = ['toggle', 'turn_off', 'turn_on']
-            services = all_services.get(entity.domain, {}).keys()
+                services = all_services.get(entity.domain, {}).keys()
 
 
-            # append the entitites tempalte
-            entities_template += entity_template.substitute(
-                id=entity_id,
-                domain=entity.domain,
-                name=entity.name or entity_id,
-                status=status_string or "unknown",
-                action=','.join(services),
+                # append the entitites tempalte
+                entities_template += entity_template.substitute(
+                    id=entity_id,
+                    domain=entity.domain,
+                    name=entity.name or entity_id,
+                    status=status_string or "unknown",
+                    action=','.join(services),
+                )
+
+            # generate the prompt using the prompt_template
+            prompt_render = prompt_template.substitute(
+                entities=entities_template,
+                prompt=user_input.text
             )
 
-        # generate the prompt using the prompt_template
-        prompt_render = prompt_template.substitute(
-            entities=entities_template,
-            prompt=user_input.text
-        )
-
-        messages.append({"role": "user", "content": prompt_render})
+        
+            messages.append({"role": "user", "content": prompt_render})
 
         _LOGGER.debug("Prompt for %s: %s", model, messages)
 
         """ OpenAI Call """
 
-        # NOTE: this version does not support a full conversation history
-        # this is because the prompt_template and entities list
-        # can quickly increase the size of a conversation
-        # causing an error where the payload is too large
-
-        # to that end we create a new list of messages to be sent
-        # sending only the system role message and the current user message
-        sending_messages = [
-            {"role": "system", "content": prompt},
-            {"role": "user", "content": prompt_render}
-        ]
-
         # call OpenAI
         try:
             result = await openai.ChatCompletion.acreate(
                 model=model,
-                messages=sending_messages,
+                messages=messages,
                 max_tokens=max_tokens,
                 top_p=top_p,
                 temperature=temperature,
@@ -261,7 +249,6 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
 
             try:
                 for entity in json_response["entities"]:
-                    # TODO: make this support more than just lights
                     await self.hass.services.async_call(entity['domain'], entity['action'], {'entity_id': entity['id']})
                     _LOGGER.debug('ACTION: %s', entity['action'])
                     _LOGGER.debug('ID: %s', entity['id'])
