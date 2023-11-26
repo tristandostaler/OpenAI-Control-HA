@@ -276,12 +276,11 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
                 return conversation.ConversationResult(
                     response=intent_response, conversation_id=conversation_id
                 )
-
-        else:
-            reply = content
+            
 
         messages.append({"role": "user", "content": reply})
         self.history[conversation_id] = messages
+
 
         intent_response = intent.IntentResponse(language=user_input.language)
         intent_response.async_set_speech(reply)
