@@ -5,7 +5,7 @@ DOMAIN = "openai_control"
 ENTITY_TEMPLATE = """$id<>$name<>$domain<>$status<>$action
 """
 
-PROMPT_TEMPLATE = """Below is a list of devices, containing the device id, name, domain, state, and actions to perform.
+PROMPT_TEMPLATE = """Below is a list of devices, containing the device id, name, domain, state, and actions that can be performed.
 The sections of the string are delimited by the string "<>"
 
 Entities:
@@ -22,6 +22,8 @@ If the prompt is a command then:
     - Respond only in the format of the above JSON Template.
     - Fill in the "assistant" field as a natural language responds for the action being taken.
     - Respond only with the JSON Template.
+
+If it is not a command, answer the user's questions about the world truthfully.
 """
 
 """Options"""
