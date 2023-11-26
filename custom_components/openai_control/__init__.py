@@ -1,4 +1,4 @@
-"""The OpenAI Conrtrol integration."""
+"""The OpenAI Control integration."""
 from __future__ import annotations
 
 import json
@@ -77,7 +77,7 @@ def _entry_ext_dict(entry: er.RegistryEntry) -> dict[str, Any]:
     return data
 
 class OpenAIAgent(conversation.AbstractConversationAgent):
-    """OpenAI Conrtrol Agent."""
+    """OpenAI Control Agent."""
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Initialize the agent."""
