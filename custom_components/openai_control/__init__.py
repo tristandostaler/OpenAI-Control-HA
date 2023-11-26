@@ -226,7 +226,7 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
         try:
             json_response = json.loads(content)
         except json.JSONDecodeError as err:
-            _LOGGER.error('Error on first parsing of JSON message from OpenAI %s', err)
+            _LOGGER.error('Error on first parsing of JSON message from OpenAI Error: [ %s ] --- Content: %s', err, content)
 
         # if the response did not come back as a JSON
         # attempt to extract JSON from the response
@@ -240,7 +240,7 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
             try:
                 json_response = json.loads(json_string)
             except json.JSONDecodeError as err:
-                _LOGGER.error('Error on second parsing of JSON message from OpenAI %s', err)
+                _LOGGER.error('Error on second parsing of JSON message from OpenAI [ %s ] --- Content: %s', err, content)
         else:
             _LOGGER.error('Error on second extraction of JSON message from OpenAI, %s', content)
 
@@ -271,6 +271,9 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
                 return conversation.ConversationResult(
                     response=intent_response, conversation_id=conversation_id
                 )
+
+        else:
+            reply = {"role": "user", "content": content}
 
         messages.append(reply)
         self.history[conversation_id] = messages
