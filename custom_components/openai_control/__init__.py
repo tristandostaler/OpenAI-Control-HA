@@ -185,6 +185,8 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
 
         
             messages.append({"role": "user", "content": prompt_render})
+        else:
+            messages.append({"role": "user", "content": user_input.text})
 
         _LOGGER.debug("Prompt for %s: %s", model, messages)
 
