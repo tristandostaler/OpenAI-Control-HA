@@ -147,6 +147,7 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
         entity_ids = self.hass.states.async_entity_ids()
         all_services = self.hass.services.async_services()
 
+
         entities_template = ''
 
         for entity_id in entity_ids:
