@@ -266,6 +266,8 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
 
             try:
                 reply = json_response['assistant']
+                if isinstance(tesreplyt_string, str):
+                    reply = {"role": "user", "content": reply}
             except KeyError as err:
                 _LOGGER.error('Error extracting assistant response %s', user_input.text)
                 intent_response = intent.IntentResponse(language=user_input.language)
