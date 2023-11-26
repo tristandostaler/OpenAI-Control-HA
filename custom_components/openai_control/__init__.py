@@ -33,6 +33,7 @@ from .const import (
     DEFAULT_TEMPERATURE,
     DEFAULT_TOP_P,
     ENTITY_TEMPLATE,
+    SYSTEM_PROMPT,
     PROMPT_TEMPLATE,
 )
 
@@ -136,7 +137,7 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
             conversation_id = ulid.ulid()
             # add the conversation starter to the begining of the conversation
             # this is to give the assistant more personality
-            messages = [{"role": "system", "content": prompt}]
+            messages = [{"role": "system", "content": prompt + SYSTEM_PROMPT}]
 
         """ Entities """
 
@@ -182,6 +183,8 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
 
         openai_messages = messages + [{"role": "user", "content": prompt_render}]
 
+        messages.append({"role": "user", "content": user_input.text})
+
         _LOGGER.debug("Prompt for %s: %s", model, openai_messages)
 
 
@@ -206,8 +209,6 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
             return conversation.ConversationResult(
                 response=intent_response, conversation_id=conversation_id
             )
-
-        messages.append({"role": "user", "content": user_input.text})
 
         content = result["choices"][0]["message"]["content"]
 

@@ -5,17 +5,13 @@ DOMAIN = "openai_control"
 ENTITY_TEMPLATE = """$id<>$name<>$domain<>$status<>$action
 """
 
-PROMPT_TEMPLATE = """Below is a list of devices, containing the device id, name, domain, state, and actions that can be performed.
+SYSTEM_PROMPT = """
+On every message you will be provided with a prompt and a list of devices, containing the device id, name, domain, state, and actions that can be performed.
 The sections of the string are delimited by the string "<>"
-
-Entities:
-$entities
-
-Prompt: "$prompt"
 
 JSON Template: { "entities": [ { "id": "", "domain": "", "action": "" } ], "assistant": "" }
 
-Determine if the above prompt is a command related to the above entities. If the prompt is a command, respond only in JSON.
+Determine if the provided prompt is a command related to the provided entities. If the prompt is a command, respond only in JSON.
 
 If the prompt is a command then:
     - Determine which entities relate to the above prompt and which action should be taken on those entities.
@@ -24,6 +20,12 @@ If the prompt is a command then:
     - Respond only with the JSON Template.
 
 If it is not a command, answer the user's questions about the world truthfully.
+"""
+
+PROMPT_TEMPLATE = """Entities:
+$entities
+
+Prompt: "$prompt"
 """
 
 """Options"""
