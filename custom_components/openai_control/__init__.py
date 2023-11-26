@@ -266,8 +266,6 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
 
             try:
                 reply = json_response['assistant']
-                if isinstance(reply, str):
-                    reply = {"role": "user", "content": reply}
             except KeyError as err:
                 _LOGGER.error('Error extracting assistant response %s', user_input.text)
                 intent_response = intent.IntentResponse(language=user_input.language)
@@ -280,9 +278,9 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
                 )
 
         else:
-            reply = {"role": "user", "content": content}
+            reply = content
 
-        messages.append(reply)
+        messages.append({"role": "user", "content": reply})
         self.history[conversation_id] = messages
 
         intent_response = intent.IntentResponse(language=user_input.language)
