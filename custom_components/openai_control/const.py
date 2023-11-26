@@ -12,6 +12,7 @@ The sections of the string are delimited by the string "<>"
 JSON Template: { "entities": [ { "id": "", "domain": "", "action": "" } ], "assistant": "" }
 
 Determine if the provided prompt is a command related to the provided entities. If the prompt is a command, respond only in JSON.
+If the prompt is a question, do not execute a command, simply answer the question.
 
 If the prompt is a command then:
     - Determine which entities relate to the above prompt and which action should be taken on those entities.
